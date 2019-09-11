@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using Entities;
-
 namespace DataAccessLayer
 {
-    public class SQLHelper
+    public class SQLHelper:IDisposable
     {
-
+        //Dispose objects
+        bool disposed = false;
+        
         private string _conString;// = @"data source=.\SQLEXPRESS;initial catalog=POC;integrated security=True;";
         SqlConnection _connection;
         public SQLHelper()
@@ -93,5 +94,26 @@ namespace DataAccessLayer
 
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            //Dispose managed resources
+            if (_connection != null && disposing)
+            {
+                _connection.Dispose();
+                _connection = null;
+            }
+
+            disposed = true;
+        }
     }
 }
